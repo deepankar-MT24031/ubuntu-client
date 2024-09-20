@@ -18,5 +18,4 @@ fi
 sudo usermod -aG sudo $NEW_USER
 
 # Switch to the new user
-echo "Switching to user $NEW_USER..."
-su - $NEW_USER
+echo "You can now log in to user $NEW_USER using: su - $NEW_USER"
