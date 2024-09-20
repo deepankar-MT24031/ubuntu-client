@@ -1,24 +1,22 @@
 #!/bin/bash
 
-# New username and password
+# Define the new user and password
 NEW_USER="client"
 NEW_PASSWORD="client"
 
-# Current username (the user that is being renamed)
-CURRENT_USER=$(whoami)
-
-# Change username
-if [ "$CURRENT_USER" != "$NEW_USER" ]; then
-    sudo usermod -l $NEW_USER $CURRENT_USER
-    sudo usermod -d /home/$NEW_USER -m $NEW_USER
-    echo "Username changed from $CURRENT_USER to $NEW_USER"
+# Check if the user already exists
+if id "$NEW_USER" &>/dev/null; then
+    echo "User $NEW_USER already exists!"
 else
-    echo "Username is already $NEW_USER"
+    # Create the new user with a home directory and set the password
+    sudo useradd -m -s /bin/bash $NEW_USER
+    echo -e "$NEW_PASSWORD\n$NEW_PASSWORD" | sudo passwd $NEW_USER
+    echo "User $NEW_USER created with password $NEW_PASSWORD"
 fi
 
-# Change password
-echo -e "$NEW_PASSWORD\n$NEW_PASSWORD" | sudo passwd $NEW_USER
+# Add the user to the sudo group (optional)
+sudo usermod -aG sudo $NEW_USER
 
-# Verify changes
-echo "New username: $NEW_USER"
-echo "Password changed for $NEW_USER"
+# Switch to the new user
+echo "Switching to user $NEW_USER..."
+su - $NEW_USER
